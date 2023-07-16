@@ -5,7 +5,7 @@ class Post {
     private string $table = 'posts';
 
     public string $id;
-    public string $category_id = '';
+    public int $category_id;
     public string $category_name = '';
     public string $title = '';
     public string $body = '';
@@ -67,5 +67,31 @@ class Post {
         $this->author = $row['author'];
         $this->category_id = $row['category_id'];
         $this->category_name = $row['category_name'];
+    }
+
+    public function create(): bool
+    {
+        $sql_query = 'INSERT INTO ' . $this->table . ' (title, body, author, category_id)
+            VALUES (:title, :body, :author, :category_id)';
+
+        $statement = $this->conn->prepare($sql_query);
+
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->body = htmlspecialchars(strip_tags($this->body));
+        $this->author = htmlspecialchars(strip_tags($this->author));
+        $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+
+        $statement->bindValue(':title', $this->title);
+        $statement->bindValue(':body', $this->body);
+        $statement->bindValue(':author', $this->author);
+        $statement->bindValue(':category_id', $this->category_id);
+
+        if ($statement->execute()) {
+            return true;
+        }
+
+        printf("Error: %s.\n", $statement->error);
+
+        return false;
     }
 }
