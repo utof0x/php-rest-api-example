@@ -20,4 +20,17 @@ class Category
         $statement->execute();
         return $statement;
     }
+
+    public function get_single_category(): void
+    {
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE id = :id ORDER BY created_at DESC';
+        $statement = $this->conn->prepare($sql);
+        $statement->bindValue(':id', $this->id);
+        $statement->execute();
+
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $this->id = $row['id'];
+        $this->name = $row['name'];
+    }
 }
