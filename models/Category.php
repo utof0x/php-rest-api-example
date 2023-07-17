@@ -52,6 +52,22 @@ class Category
         return false;
     }
 
+    public function update(): bool
+    {
+        $sql = "UPDATE " . $this->table . " SET name = :name WHERE id = :id";
+        $statement = $this->conn->prepare($sql);
+
+        $statement->bindValue(':id', $this->id);
+        $statement->bindValue(':name', $this->name);
+
+        if($statement->execute()) {
+            return true;
+        }
+
+        printf("Error: %s.\n", $statement->error);
+        return false;
+    }
+
     public function delete(): bool
     {
         $sql = "DELETE FROM " . $this->table . " WHERE id = :id";
