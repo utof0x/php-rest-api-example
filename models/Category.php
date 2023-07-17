@@ -33,4 +33,22 @@ class Category
         $this->id = $row['id'];
         $this->name = $row['name'];
     }
+
+    public function create(): bool
+    {
+        $sql = "INSERT INTO " . $this->table . " (name) VALUES (:name)";
+        $statement = $this->conn->prepare($sql);
+
+        $this->name = htmlspecialchars(strip_tags($this->name));
+
+        $statement->bindValue(':name', $this->name);
+
+        if($statement->execute()) {
+            return true;
+        }
+
+        printf("Error: %s.\n", $statement->error);
+
+        return false;
+    }
 }
